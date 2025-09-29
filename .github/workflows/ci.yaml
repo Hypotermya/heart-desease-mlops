@@ -16,4 +16,4 @@ jobs:
       - name: Lint
         run: flake8 app/
       - name: Tests
-        run: pytest tests/
+        run: PYTHONPATH=. pytest tests/
