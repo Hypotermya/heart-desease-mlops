@@ -4,21 +4,18 @@ from app.api import app
 client = TestClient(app)
 
 def test_predict_endpoint():
-    # Ejemplo con las 11 columnas originales
     example_input = {
-        "features": [
-            55,             # Age
-            "M",            # Sex
-            "ASY",          # ChestPainType
-            115.0,          # RestingBP
-            None,           # Cholesterol (puede venir NaN)
-            1,              # FastingBS
-            "Normal",       # RestingECG
-            155,            # MaxHR
-            "N",            # ExerciseAngina
-            0.1,            # Oldpeak
-            "Flat"          # ST_Slope
-        ]
+        "Age": 55,
+        "Sex": "M",
+        "ChestPainType": "ASY",
+        "RestingBP": 115.0,
+        "Cholesterol": None,
+        "FastingBS": 1,
+        "RestingECG": "Normal",
+        "MaxHR": 155,
+        "ExerciseAngina": "N",
+        "Oldpeak": 0.1,
+        "ST_Slope": "Flat"
     }
 
     response = client.post("/predict", json=example_input)
