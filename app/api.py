@@ -20,4 +20,3 @@ def predict(data: Input):
         "heart_disease_probability": float(proba),
         "prediction": int(proba > 0.5),
     }
-
