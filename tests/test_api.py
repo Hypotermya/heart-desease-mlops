@@ -18,6 +18,7 @@ def test_predict_endpoint():
         "ST_Slope": "Flat"
     }
 
+
     response = client.post("/predict", json=example_input)
     assert response.status_code == 200
     result = response.json()

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 import numpy as np
+import pandas as pd
 
 # Cargar el modelo entrenado
 model = joblib.load("model.joblib")
@@ -24,11 +25,27 @@ class Input(BaseModel):
 
 @app.post("/predict")
 def predict(data: Input):
-    X = np.array([[
-        data.Age, data.Sex, data.ChestPainType, data.RestingBP,
-        data.Cholesterol, data.FastingBS, data.RestingECG, data.MaxHR,
-        data.ExerciseAngina, data.Oldpeak, data.ST_Slope
-    ]], dtype=object)
+    # Convertir a DataFrame con columnas esperadas
+    input_dict = {
+        "Age": [data.Age],
+        "Sex": [data.Sex],
+        "ChestPainType": [data.ChestPainType],
+        "RestingBP": [data.RestingBP],
+        "Cholesterol": [data.Cholesterol],
+        "FastingBS": [data.FastingBS],
+        "RestingECG": [data.RestingECG],
+        "MaxHR": [data.MaxHR],
+        "ExerciseAngina": [data.ExerciseAngina],
+        "Oldpeak": [data.Oldpeak],
+        "ST_Slope": [data.ST_Slope],
+    }
+
+    X = pd.DataFrame(input_dict)
 
     proba = model.predict_proba(X)[0][1]
-    return {"heart_disease_probability": proba, "prediction": int(proba > 0.5)}
+    prediction = int(proba > 0.5)
+
+    return {
+        "heart_disease_probability": float(proba),
+        "prediction": prediction
+    }
