@@ -5,3 +5,4 @@ joblib
 pydantic
 xgboost
 httpx
+pandas
