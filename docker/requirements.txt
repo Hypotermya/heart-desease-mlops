@@ -6,3 +6,4 @@ pydantic
 xgboost
 httpx
 pandas
+evidently
