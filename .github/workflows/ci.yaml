@@ -1,38 +1,52 @@
 name: CI
 
-on: [push]
- jobs:
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
   lint-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.10"
+
       - name: Install dependencies
         run: |
           pip install -r docker/requirements.txt
-          pip install flake8 pytest
+          pip install flake8 pytest httpx
+
       - name: Run Flake8
-        run: flake8 app/
+        run: flake8 app/ --max-line-length=120
+
       - name: Run Tests
-        run: pytest
+        run: pytest tests/ --maxfail=1 --disable-warnings -q
 
   drift-report:
     runs-on: ubuntu-latest
-    needs: lint-test   # Se ejecuta solo si los tests pasan
+    needs: lint-test   # se ejecuta solo si lint-test pasa
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.10"
+
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          pip install -r docker/requirements.txt
+          pip install evidently
+
       - name: Generate Evidently report
         run: python monitoring/drift_report.py
+
       - name: Upload drift report
         uses: actions/upload-artifact@v3
         with:
